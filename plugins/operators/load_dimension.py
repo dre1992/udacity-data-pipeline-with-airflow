@@ -19,15 +19,19 @@ class LoadDimensionOperator(BaseOperator):
                  redshift_conn_id="",
                  table="",
                  sql_stmt="",
+                 truncate=False,
                  *args, **kwargs):
         super(LoadDimensionOperator, self).__init__(*args, **kwargs)
         self.redshift_conn_id = redshift_conn_id
         self.table = table
         self.sql_stmt = sql_stmt
+        self.truncate=truncate
 
     def execute(self, context):
-        self.log.info(f'LoadDimensionOperator for {table}')
+        self.log.info(f'LoadDimensionOperator for {self.table}')
         redshift = PostgresHook(postgres_conn_id=self.redshift_conn_id)
+        if self.truncate:
+            redshift.run(f"TRUNCATE TABLE {self.table}")
         formatted_sql = f"INSERT INTO {self.table} ({self.sql_stmt})"
         redshift.run(formatted_sql)
         self.log.info(f"Finished: {self.task_id}")
