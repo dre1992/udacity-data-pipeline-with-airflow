@@ -31,9 +31,15 @@ dag = DAG('udac_example_dag',
 start_operator = DummyOperator(task_id='Begin_execution', dag=dag)
 load_operator = DummyOperator(task_id='Begin_data_loading', dag=dag)
 
+run_this = BashOperator(
+    task_id='run_after_loop',
+    bash_command='echo 1',
+    dag=dag,
+)
+
 TABLES = ["staging_events", "staging_songs", "users", "songs",
           "artists", "time", "songplays"]
 
 
-start_operator >> load_operator
+start_operator >> run_this >> load_operator
 
