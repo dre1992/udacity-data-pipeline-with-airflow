@@ -35,5 +35,5 @@ TABLES = ["staging_events", "staging_songs", "users", "songs",
           "artists", "time", "songplays"]
 
 
-start_operator >> load_operator >> end_operator
+start_operator >> load_operator
 
